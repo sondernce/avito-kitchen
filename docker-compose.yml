@@ -1,0 +1,52 @@
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: avito-kitchen-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: avito_kitchen
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  main-service:
+    build:
+      context: .
+      dockerfile: main-service/Dockerfile
+    container_name: avito-kitchen-main
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_NAME: avito_kitchen
+      DB_SSLMODE: disable
+    ports:
+      - "8082:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
+  restaurant-service:
+    build:
+      context: .
+      dockerfile: restaurant-service/Dockerfile
+    container_name: avito-kitchen-restaurant
+    environment:
+      MAIN_SERVICE_URL: http://main-service:8080
+    ports:
+      - "8083:8081"
+    depends_on:
+      - main-service
+    restart: unless-stopped
+
+volumes:
+  postgres_data:

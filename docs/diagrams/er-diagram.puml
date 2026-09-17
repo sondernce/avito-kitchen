@@ -1,0 +1,67 @@
+@startuml
+!theme plain
+
+entity "restaurants" as restaurants {
+  * id : SERIAL <<PK>>
+  --
+  * name : VARCHAR(255)
+  description : TEXT
+  address : VARCHAR(500)
+  phone : VARCHAR(20)
+  is_active : BOOLEAN
+  webhook_url : VARCHAR(500)
+  created_at : TIMESTAMP
+  updated_at : TIMESTAMP
+}
+
+entity "dishes" as dishes {
+  * id : SERIAL <<PK>>
+  --
+  * restaurant_id : INTEGER <<FK>>
+  * name : VARCHAR(255)
+  description : TEXT
+  price : DECIMAL(10,2)
+  category : VARCHAR(100)
+  is_available : BOOLEAN
+  created_at : TIMESTAMP
+  updated_at : TIMESTAMP
+}
+
+entity "orders" as orders {
+  * id : SERIAL <<PK>>
+  --
+  * user_id : INTEGER
+  * restaurant_id : INTEGER <<FK>>
+  status : VARCHAR(50)
+  total_price : DECIMAL(10,2)
+  delivery_address : TEXT
+  phone : VARCHAR(20)
+  created_at : TIMESTAMP
+  updated_at : TIMESTAMP
+}
+
+entity "order_items" as order_items {
+  * id : SERIAL <<PK>>
+  --
+  * order_id : INTEGER <<FK>>
+  * dish_id : INTEGER <<FK>>
+  quantity : INTEGER
+  price : DECIMAL(10,2)
+}
+
+entity "users" as users {
+  * id : SERIAL <<PK>>
+  --
+  * name : VARCHAR(255)
+  phone : VARCHAR(20)
+  address : TEXT
+  created_at : TIMESTAMP
+}
+
+restaurants ||--o{ dishes : "has"
+restaurants ||--o{ orders : "receives"
+orders ||--o{ order_items : "contains"
+dishes ||--o{ order_items : "included_in"
+users ||--o{ orders : "places"
+
+@enduml

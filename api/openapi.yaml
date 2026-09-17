@@ -1,0 +1,511 @@
+openapi: 3.0.3
+info:
+  title: Avito.Kitchen API
+  description: API для сервиса заказа еды
+  version: 1.0.0
+  contact:
+    name: Backend Team
+    email: backend@avitokitchen.ru
+
+servers:
+  - url: http://localhost:8080/api/v1
+    description: Local development server
+
+tags:
+  - name: restaurants
+    description: Управление ресторанами
+  - name: dishes
+    description: Управление блюдами
+  - name: orders
+    description: Управление заказами
+
+paths:
+  /restaurants:
+    post:
+      tags:
+        - restaurants
+      summary: Создать ресторан
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateRestaurantRequest'
+      responses:
+        '201':
+          description: Ресторан создан
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Restaurant'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+    get:
+      tags:
+        - restaurants
+      summary: Получить список ресторанов
+      responses:
+        '200':
+          description: Список ресторанов
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Restaurant'
+
+  /restaurants/{id}:
+    get:
+      tags:
+        - restaurants
+      summary: Получить ресторан по ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Ресторан найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Restaurant'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /restaurants/{id}/activate:
+    patch:
+      tags:
+        - restaurants
+      summary: Активировать ресторан
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Ресторан активирован
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /restaurants/{id}/deactivate:
+    patch:
+      tags:
+        - restaurants
+      summary: Деактивировать ресторан
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Ресторан деактивирован
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /restaurants/{id}/menu:
+    get:
+      tags:
+        - dishes
+      summary: Получить меню ресторана
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Меню ресторана
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Dish'
+
+  /dishes:
+    post:
+      tags:
+        - dishes
+      summary: Создать блюдо
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateDishRequest'
+      responses:
+        '201':
+          description: Блюдо создано
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dish'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /dishes/{id}:
+    delete:
+      tags:
+        - dishes
+      summary: Удалить блюдо
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Блюдо удалено
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /dishes/{id}/availability:
+    patch:
+      tags:
+        - dishes
+      summary: Обновить доступность блюда
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                available:
+                  type: boolean
+      responses:
+        '200':
+          description: Доступность обновлена
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /orders:
+    post:
+      tags:
+        - orders
+      summary: Создать заказ
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateOrderRequest'
+      responses:
+        '201':
+          description: Заказ создан
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /orders/{id}:
+    get:
+      tags:
+        - orders
+      summary: Получить заказ по ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Заказ найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /orders/{id}/status:
+    patch:
+      tags:
+        - orders
+      summary: Обновить статус заказа
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateStatusRequest'
+      responses:
+        '200':
+          description: Статус обновлён
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+
+  /orders/{id}/cancel:
+    patch:
+      tags:
+        - orders
+      summary: Отменить заказ
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Заказ отменён
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /users/{id}/orders:
+    get:
+      tags:
+        - orders
+      summary: Получить заказы пользователя
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Список заказов пользователя
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Order'
+
+  /restaurants/{id}/orders:
+    get:
+      tags:
+        - orders
+      summary: Получить заказы ресторана
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Список заказов ресторана
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Order'
+
+components:
+  schemas:
+    Restaurant:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        address:
+          type: string
+        phone:
+          type: string
+        is_active:
+          type: boolean
+        webhook_url:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    CreateRestaurantRequest:
+      type: object
+      required:
+        - name
+        - address
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        address:
+          type: string
+        phone:
+          type: string
+
+    Dish:
+      type: object
+      properties:
+        id:
+          type: integer
+        restaurant_id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        price:
+          type: number
+          format: double
+        category:
+          type: string
+        is_available:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    CreateDishRequest:
+      type: object
+      required:
+        - restaurant_id
+        - name
+        - price
+      properties:
+        restaurant_id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        price:
+          type: number
+          format: double
+        category:
+          type: string
+
+    Order:
+      type: object
+      properties:
+        id:
+          type: integer
+        user_id:
+          type: integer
+        restaurant_id:
+          type: integer
+        status:
+          type: string
+          enum: [created, confirmed, preparing, delivering, completed, cancelled]
+        total_price:
+          type: number
+          format: double
+        delivery_address:
+          type: string
+        phone:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderItem'
+
+    OrderItem:
+      type: object
+      properties:
+        dish_id:
+          type: integer
+        quantity:
+          type: integer
+        price:
+          type: number
+          format: double
+
+    CreateOrderRequest:
+      type: object
+      required:
+        - user_id
+        - restaurant_id
+        - delivery_address
+        - items
+      properties:
+        user_id:
+          type: integer
+        restaurant_id:
+          type: integer
+        delivery_address:
+          type: string
+        phone:
+          type: string
+        items:
+          type: array
+          items:
+            type: object
+            properties:
+              dish_id:
+                type: integer
+              quantity:
+                type: integer
+
+    UpdateStatusRequest:
+      type: object
+      required:
+        - status
+      properties:
+        status:
+          type: string
+          enum: [created, confirmed, preparing, delivering, completed, cancelled]
+
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+        time:
+          type: string
+          format: date-time
+
+  responses:
+    BadRequest:
+      description: Неверный запрос
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Не найдено
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Conflict:
+      description: Конфликт состояния
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'

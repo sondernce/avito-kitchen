@@ -1,0 +1,25 @@
+@startuml
+!theme plain
+
+title Customer Journey Map - Ресторан
+
+actor "Ресторан" as restaurant
+participant "Main Service" as main
+participant "Restaurant Service" as rs
+database "PostgreSQL" as db
+
+restaurant -> main: POST /api/v1/restaurants
+main -> db: INSERT INTO restaurants
+main --> restaurant: Ресторан создан
+
+restaurant -> main: POST /api/v1/dishes
+main -> db: INSERT INTO dishes
+main --> restaurant: Блюдо добавлено
+
+main -> rs: POST /webhook/order
+rs -> rs: Обработка заказа
+rs -> main: PATCH /api/v1/orders/{id}/status
+main -> db: UPDATE orders SET status = ?
+main --> rs: Статус обновлён
+
+@enduml

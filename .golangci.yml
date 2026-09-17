@@ -1,0 +1,284 @@
+run:
+  timeout: 5m
+  tests: true
+
+linters:
+  enable:
+    - govet
+    - errcheck
+    - staticcheck
+    - gosimple
+    - ineffassign
+    - unused
+    - typecheck
+    - gofmt
+    - goimports
+    - misspell
+    - revive
+    - gocritic
+    - godot
+    - whitespace
+    - unconvert
+    - unparam
+    - prealloc
+    - exportloopref
+    - gochecknoinits
+    - gochecknoglobals
+    - dupl
+    - goconst
+    - gocyclo
+    - gosec
+    - bodyclose
+    - noctx
+    - rowserrcheck
+    - sqlclosecheck
+    - wastedassign
+    - nilerr
+    - errorlint
+    - wrapcheck
+    - depguard
+    - dogsled
+    - nakedret
+    - predeclared
+    - exhaustive
+    - forcetypeassert
+    - makezero
+    - nilnil
+    - containedctx
+    - contextcheck
+    - decorder
+    - dupword
+    - errchkjson
+    - errname
+    - execinquery
+    - ginkgolinter
+    - gocheckcompilerdirectives
+    - gocognit
+    - goheader
+    - gomoddirectives
+    - gomodguard
+    - grouper
+    - importas
+    - interfacebloat
+    - ireturn
+    - loggercheck
+    - maintidx
+    - mirror
+    - musttag
+    - nestif
+    - nlreturn
+    - nonamedreturns
+    - nosprintfhostport
+    - paralleltest
+    - perfsprint
+    - promlinter
+    - protogetter
+    - reassign
+    - sloglint
+    - spancheck
+    - tagalign
+    - tagliatelle
+    - tenv
+    - testableexamples
+    - testifylint
+    - testpackage
+    - thelper
+    - tparallel
+    - usestdlibvars
+    - varnamelen
+    - wastedassign
+    - zerologlint
+
+linters-settings:
+  govet:
+    check-shadowing: true
+  errcheck:
+    check-type-assertions: true
+    check-blank: true
+  staticcheck:
+    checks: ["all"]
+  revive:
+    rules:
+      - name: exported
+      - name: package-comments
+      - name: var-naming
+      - name: indent-error-flow
+      - name: errorf
+      - name: blank-imports
+      - name: context-as-argument
+      - name: context-keys-type
+      - name: dot-imports
+      - name: error-return
+      - name: error-strings
+      - name: error-naming
+      - name: if-return
+      - name: increment-decrement
+      - name: range
+      - name: receiver-naming
+      - name: time-naming
+      - name: unexported-return
+      - name: unreachable-code
+      - name: redefines-builtin-id
+  gocritic:
+    enabled-tags:
+      - diagnostic
+      - style
+      - performance
+      - experimental
+      - opinionated
+  gocyclo:
+    min-complexity: 15
+  goconst:
+    min-len: 2
+    min-occurrences: 3
+  dupl:
+    threshold: 100
+  gosec:
+    excludes:
+      - G104
+      - G304
+      - G306
+      - G307
+  depguard:
+    rules:
+      main:
+        deny:
+          - pkg: "io/ioutil"
+            desc: "Use os or io instead"
+          - pkg: "github.com/pkg/errors"
+            desc: "Use standard errors package"
+  varnamelen:
+    max-distance: 5
+    min-name-length: 2
+    ignore-names:
+      - err
+      - ok
+      - id
+      - db
+      - ctx
+      - wg
+      - mu
+      - tx
+      - ch
+      - fn
+      - op
+      - tc
+      - tt
+      - w
+      - r
+      - b
+      - t
+      - v
+      - i
+      - j
+      - k
+      - n
+      - m
+      - s
+      - p
+      - q
+      - x
+      - y
+      - z
+      - a
+      - c
+      - d
+      - e
+      - f
+      - g
+      - h
+      - l
+      - o
+      - u
+
+issues:
+  exclude-rules:
+    - path: _test\.go
+      linters:
+        - govet
+        - errcheck
+        - staticcheck
+        - gosimple
+        - ineffassign
+        - unused
+        - typecheck
+        - gofmt
+        - goimports
+        - misspell
+        - revive
+        - gocritic
+        - godot
+        - whitespace
+        - unconvert
+        - unparam
+        - prealloc
+        - exportloopref
+        - gochecknoinits
+        - gochecknoglobals
+        - dupl
+        - goconst
+        - gocyclo
+        - gosec
+        - bodyclose
+        - noctx
+        - rowserrcheck
+        - sqlclosecheck
+        - wastedassign
+        - nilerr
+        - errorlint
+        - wrapcheck
+        - depguard
+        - dogsled
+        - nakedret
+        - predeclared
+        - exhaustive
+        - forcetypeassert
+        - makezero
+        - nilnil
+        - containedctx
+        - contextcheck
+        - decorder
+        - dupword
+        - errchkjson
+        - errname
+        - execinquery
+        - ginkgolinter
+        - gocheckcompilerdirectives
+        - gocognit
+        - goheader
+        - gomoddirectives
+        - gomodguard
+        - grouper
+        - importas
+        - interfacebloat
+        - ireturn
+        - loggercheck
+        - maintidx
+        - mirror
+        - musttag
+        - nestif
+        - nlreturn
+        - nonamedreturns
+        - nosprintfhostport
+        - paralleltest
+        - perfsprint
+        - promlinter
+        - protogetter
+        - reassign
+        - sloglint
+        - spancheck
+        - tagalign
+        - tagliatelle
+        - tenv
+        - testableexamples
+        - testifylint
+        - testpackage
+        - thelper
+        - tparallel
+        - usestdlibvars
+        - varnamelen
+        - wastedassign
+        - zerologlint
+  exclude-use-default: false
+  max-issues-per-linter: 0
+  max-same-issues: 0

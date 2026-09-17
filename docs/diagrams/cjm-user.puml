@@ -1,0 +1,31 @@
+@startuml
+!theme plain
+
+title Customer Journey Map - Пользователь
+
+actor "Пользователь" as user
+participant "Main Service" as main
+database "PostgreSQL" as db
+
+user -> main: GET /api/v1/restaurants
+main -> db: SELECT * FROM restaurants
+main --> user: Список ресторанов
+
+user -> main: GET /api/v1/restaurants/{id}/menu
+main -> db: SELECT * FROM dishes WHERE restaurant_id = ?
+main --> user: Меню ресторана
+
+user -> main: POST /api/v1/orders
+main -> db: INSERT INTO orders
+main -> main: Отправка webhook
+main --> user: Заказ создан
+
+user -> main: GET /api/v1/orders/{id}
+main -> db: SELECT * FROM orders WHERE id = ?
+main --> user: Статус заказа
+
+user -> main: PATCH /api/v1/orders/{id}/cancel
+main -> db: UPDATE orders SET status = 'cancelled'
+main --> user: Заказ отменён
+
+@enduml

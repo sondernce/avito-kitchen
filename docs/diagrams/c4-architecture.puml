@@ -1,0 +1,24 @@
+@startuml
+!theme plain
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+LAYOUT_WITH_LEGEND()
+
+title C4 Container Diagram - Avito.Kitchen
+
+Person(user, "Пользователь", "Заказывает еду через приложение")
+Person(restaurant, "Ресторан", "Управляет меню и обрабатывает заказы")
+
+System_Boundary(avito_kitchen, "Avito.Kitchen") {
+    Container(main_service, "Main Service", "Go, Gorilla Mux", "REST API для пользователей и ресторанов")
+    Container(restaurant_service, "Restaurant Service", "Go, Gorilla Mux", "Пример интеграции ресторана")
+    ContainerDb(postgres, "PostgreSQL", "PostgreSQL 15", "Хранение данных")
+}
+
+Rel(user, main_service, "Заказывает еду", "HTTP/JSON")
+Rel(restaurant, main_service, "Управляет меню", "HTTP/JSON")
+Rel(main_service, postgres, "Читает/пишет данные", "SQL")
+Rel(main_service, restaurant_service, "Уведомляет о заказах", "HTTP/Webhook")
+Rel(restaurant_service, main_service, "Обновляет статусы", "HTTP/JSON")
+
+@enduml
